@@ -1,27 +1,43 @@
+/*
+
+                            NoteTaker
+
+    Author: Abishkar subedi
+
+
+
+*/
+
+
+// TODO:  Understand context (exploits, usages)
+
 import 'package:flutter/material.dart';
 import 'note/makenotes.dart';
 
-// 1. Change MyApp to a StatefulWidget
 class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
-  State<MyApp> createState() => _MyAppState(); // 2. Create the State class
+  State<MyApp> createState() => _MyAppState();
 }
 
-// 2. Define the State class for MyApp
 class _MyAppState extends State<MyApp> {
-  // 3. Declare a mutable list to hold your notes (this is your 'state')
-  //    Initialize it with some dummy notes for a start
+
+// yo ma chai currently buffer ma bhako notes haru save hunxa
+// Note: this is not permanent, app close bhaya ghayab hunxa
   final List<String> _notes = [];
 
-  // 4. Function to add a new note
+// function that add then note entered by the user to _notes list
+// setState() fn is imp cause this trigger the change of state to render again
   void _addNote(String noteContent) {
     setState(() {
-      _notes.add(noteContent); // Add the new note to the list });
+      _notes.add(noteContent);
     });
   }
 
+// yo fn harek note container ma embbed hunxa
+// tyo index chai, user clicks and then automatically taken
+// so the desired note can be delted
   void _deleteNote(index) {
     setState(() {
           _notes.removeAt(index);
@@ -36,16 +52,14 @@ class _MyAppState extends State<MyApp> {
           backgroundColor: Colors.blueAccent,
         ),
         body: Center(
-          // 6. Use ListView.builder for potentially long lists
-          //    This is more efficient than Column for many items.
-          //    If you prefer Column for now, you can keep it, but ListView.builder
-          //    is a better practice for dynamic lists.
           child: _notes.isEmpty
               ? const Center(child: Text('Press the + button to add notes!'))
-              : ListView.builder(
+              : ListView.builder( // Note: Understand this, idk how this operates
                   itemCount: _notes.length,
-                  itemBuilder: (context, index) {
-                    // 7. Pass each note from the _notes list to MakeNotes
+                  itemBuilder: (context, index) { // Note: how many things get this context
+
+                  // imp: yo MakeNotes doesn't carry any logics at all
+                  // desgins change hanna paryo bhanea matra acess garne
                     return MakeNotes(
                       noteText: _notes[index],
                       onDelete: () => _deleteNote(index),
@@ -54,11 +68,13 @@ class _MyAppState extends State<MyApp> {
                 ),
         ),
         floatingActionButton: FloatingActionButton(
+          // Note: Understand where and when to embbed this anonymous
           onPressed: () {
-            showDialog(
+            showDialog( // Note: are all the popup shits are showDialog ?
             context: context,
             builder: (context) {
               String newNote = '';
+
               return AlertDialog(
                 title: Text('Add note'),
                 content: TextField(
@@ -86,7 +102,7 @@ class _MyAppState extends State<MyApp> {
               );
             }
           );
-        },// 8. Call your _addNote function here
+        },
           child: const Icon(Icons.add),
         ),
       );
@@ -95,6 +111,9 @@ class _MyAppState extends State<MyApp> {
 
 void main() {
   runApp(
+    // imp: data yeta uti garna or ,
+    // context lai proper use garna ,
+    // whole app lai MaterialApp ma wrap hannu parxa !?
     const MaterialApp(
       debugShowCheckedModeBanner: false,
       home: MyApp(),
